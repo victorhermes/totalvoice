@@ -2,16 +2,28 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
+const loginController = require("./lib/controllers/login");
+const dashboardController = require("./lib/controllers/dashboard");
+
 const app = express();
 const router = express.Router();
 
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    maxAge: "100"
+  })
+);
+
+router.post("/login", loginController.emailLogin);
+router.post("/verify-2fa", loginController.verify2FA);
+router.get("/dashboard", dashboardController.get);
+
 app.use(router);
 
-app.get("/", function(req, res) {
-  res.send("Hello World!");
-});
-
-app.listen(3000, () => {
+app.listen(3001, () => {
   console.log("App listening on port 3000!");
 });
